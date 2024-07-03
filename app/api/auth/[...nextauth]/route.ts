@@ -1,8 +1,17 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { compare } from 'bcryptjs';
+import { compare, genSalt, hash } from 'bcryptjs';
 import pool from '@/services/db';
 import { Credentials } from '@/types';
+
+
+async function generateHash() {
+  const salt = await genSalt(12);
+  const hashed = await hash('exp2023E', salt);
+  console.log('Generated hash:', hashed);
+}
+
+generateHash();
 
 export const authOptions: AuthOptions = {
   providers: [

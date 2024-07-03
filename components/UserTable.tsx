@@ -14,6 +14,11 @@ import {
   Snackbar,
   Alert,
   Box,
+  Grid,
+  useMediaQuery,
+  useTheme,
+  Typography,
+  Hidden,
 } from "@mui/material";
 import { User } from "@/types";
 import { updateUser } from "@/services/users";
@@ -30,6 +35,9 @@ export default function UserTable({ users }: UserTableProps) {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleEdit = (id: number) => {
     setEditRows({ ...editRows, [id]: true });
@@ -66,64 +74,168 @@ export default function UserTable({ users }: UserTableProps) {
 
   return (
     <>
-      <Box sx={{ overflowX: "auto" }}>
+      <Box sx={{ width: "100%" }}>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
+          <Table sx={{ width: "100%" }}>
+            <Hidden smDown>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Role</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+            </Hidden>
             <TableBody>
               {editedUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    {editRows[user.id] ? (
-                      <TextField
-                        value={user.name}
-                        onChange={(e) =>
-                          handleChange(user.id, "name", e.target.value)
-                        }
-                      />
-                    ) : (
-                      user.name
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editRows[user.id] ? (
-                      <TextField
-                        value={user.email}
-                        onChange={(e) =>
-                          handleChange(user.id, "email", e.target.value)
-                        }
-                      />
-                    ) : (
-                      user.email
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editRows[user.id] ? (
-                      <TextField
-                        value={user.role}
-                        onChange={(e) =>
-                          handleChange(user.id, "role", e.target.value)
-                        }
-                      />
-                    ) : (
-                      user.role
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {editRows[user.id] ? (
-                      <Button onClick={() => handleSave(user.id)}>Save</Button>
-                    ) : (
-                      <Button onClick={() => handleEdit(user.id)}>Edit</Button>
-                    )}
-                  </TableCell>
-                </TableRow>
+                <React.Fragment key={user.id}>
+                  {isMobile ? (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ padding: 0 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            p: 2,
+                            width: "100%",
+                          }}
+                        >
+                          <Box sx={{ mb: 1 }}>
+                            <Typography variant="body2" component="div">
+                              <strong>Name:</strong>{" "}
+                              {editRows[user.id] ? (
+                                <TextField
+                                  value={user.name}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      user.id,
+                                      "name",
+                                      e.target.value
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              ) : (
+                                user.name
+                              )}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ mb: 1 }}>
+                            <Typography variant="body2" component="div">
+                              <strong>Email:</strong>{" "}
+                              {editRows[user.id] ? (
+                                <TextField
+                                  value={user.email}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      user.id,
+                                      "email",
+                                      e.target.value
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              ) : (
+                                user.email
+                              )}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ mb: 1 }}>
+                            <Typography variant="body2" component="div">
+                              <strong>Role:</strong>{" "}
+                              {editRows[user.id] ? (
+                                <TextField
+                                  value={user.role}
+                                  onChange={(e) =>
+                                    handleChange(
+                                      user.id,
+                                      "role",
+                                      e.target.value
+                                    )
+                                  }
+                                  fullWidth
+                                />
+                              ) : (
+                                user.role
+                              )}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            {editRows[user.id] ? (
+                              <Button
+                                onClick={() => handleSave(user.id)}
+                                fullWidth
+                              >
+                                Save
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={() => handleEdit(user.id)}
+                                fullWidth
+                              >
+                                Edit
+                              </Button>
+                            )}
+                          </Box>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <TableRow>
+                      <TableCell>
+                        {editRows[user.id] ? (
+                          <TextField
+                            value={user.name}
+                            onChange={(e) =>
+                              handleChange(user.id, "name", e.target.value)
+                            }
+                            fullWidth
+                          />
+                        ) : (
+                          user.name
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editRows[user.id] ? (
+                          <TextField
+                            value={user.email}
+                            onChange={(e) =>
+                              handleChange(user.id, "email", e.target.value)
+                            }
+                            fullWidth
+                          />
+                        ) : (
+                          user.email
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editRows[user.id] ? (
+                          <TextField
+                            value={user.role}
+                            onChange={(e) =>
+                              handleChange(user.id, "role", e.target.value)
+                            }
+                            fullWidth
+                          />
+                        ) : (
+                          user.role
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {editRows[user.id] ? (
+                          <Button onClick={() => handleSave(user.id)}>
+                            Save
+                          </Button>
+                        ) : (
+                          <Button onClick={() => handleEdit(user.id)}>
+                            Edit
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
               ))}
             </TableBody>
           </Table>
