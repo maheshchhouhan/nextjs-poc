@@ -3,6 +3,10 @@ import pool from "@/services/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { User } from "@/types";
+import { NextResponse } from 'next/server';
+import { cookies } from "next/headers";
+import { setAuthToken } from "./utils";
+
 
 export const fetchAllUsers = async () => {
   const session = (await getServerSession(authOptions)) as { user: User };
@@ -51,5 +55,36 @@ export async function updateUser(user: { id: number; name: string; email: string
       console.error('Unknown error updating user');
       return { success: false, message: 'An unknown error occurred' };
     }
+  }
+}
+
+export async function Authenticate(userName: string, password: string, clientId: string) {
+  const connection = await pool.getConnection();
+  try {
+
+    const response = await fetch('https://dev.exp-inc.com/EXPDev71/api/users/authenticateUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'offset': "5.5",
+      },
+      body: JSON.stringify({
+        userName,
+        password,
+        clientId
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.headers.get("Auth_Token")) {
+      await setAuthToken(response.headers.get("Auth_Token"));
+    }
+    return NextResponse.json({ status: true, message: result.message, data: result.data });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
+  } finally {
+    connection.release();
   }
 }

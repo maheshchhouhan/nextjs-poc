@@ -17,14 +17,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
+
+  // Next Auth Session
+  // const session = await getServerSession(authOptions);
+  // Check auth Headers
+  const isSessionValid = true;
 
   return (
     <html lang="en">
       <body>
         <Providers>
           <CssBaseline />
-          {session ? (
+          {isSessionValid ? (
             <Box sx={{ display: "flex" }}>
               {/* <Sidebar /> */}
               <Box component="main" sx={{ flexGrow: 1 }}>

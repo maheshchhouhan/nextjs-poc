@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Authenticate } from "@/services/users";
+
 import {
   Button,
   TextField,
@@ -40,15 +42,20 @@ export default function LoginPage() {
     validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
       try {
-        const result = await signIn("credentials", {
-          redirect: false,
-          email: values.email,
-          password: values.password,
-        });
 
-        if (result?.error) {
+        // Next Auth
+        // const result = await signIn("credentials", {
+        //   redirect: false,
+        //   email: values.email,
+        //   password: values.password,
+        // });
+
+        // Using EXP API Login
+        const result = await Authenticate(values.email, values.password, "1");
+
+        if (result.status != 200) {
           setSeverity("error");
-          setMessage(result.error);
+          // setMessage(result.error);
           setOpen(true);
         } else {
           setSeverity("success");

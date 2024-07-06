@@ -5,13 +5,13 @@ import pool from '@/services/db';
 import { Credentials } from '@/types';
 
 
-async function generateHash() {
-  const salt = await genSalt(12);
-  const hashed = await hash('exp2023E', salt);
-  console.log('Generated hash:', hashed);
-}
+// async function generateHash() {
+//   const salt = await genSalt(12);
+//   const hashed = await hash('exp2023E', salt);
+//   console.log('Generated hash:', hashed);
+// }
 
-generateHash();
+// generateHash();
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -54,7 +54,7 @@ export const authOptions: AuthOptions = {
           connection.release();
         }
       }
-    })
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
